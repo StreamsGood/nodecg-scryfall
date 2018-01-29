@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+
+	<script src="../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+	<script src="../node_modules/axios/dist/axios.js"></script>
+
+	<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+	<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+	<link rel="import" href="../bower_components/iron-icons/notification-icons.html">
+
+	<link rel="import" href="../bower_components/vaadin-button/vaadin-button.html">
+	<link rel="import" href="../bower_components/nodecg-vaadin-checkbox/nodecg-vaadin-checkbox.html">
+	<link rel="import" href="../bower_components/nodecg-vaadin-text-field/nodecg-vaadin-text-field.html">
+
+	<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-button.html">
+	<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-checkbox.html">
+	<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-text-field.html">
+	<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-combo-box.html">
+
+	<link rel="import" href="../bower_components/iron-form/iron-form.html">
+	<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+	<link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+
+	<link rel="import" href="../bower_components/mtg-mana-cost/mtg-mana-cost.html">
+
+	<custom-style>
+		<style include="iron-flex iron-flex-alignment"></style>
+	</custom-style>
+
+	<style>
+		#search-field {
+			width: 100%;
+			margin-top: -10px;
+		}
+
+		.search-option {
+			font-size: 0.8em;
+		}
+
+		#search-results {
+			max-height: 215px;
+			height: 215px;
+			overflow-y: scroll;
+
+			margin-top: 10px;
+
+			width: 100%;
+		}
+
+		#search-results .name {
+			flex: 6;
+			font-size: 0.9em;
+		}
+
+		#search-results .cost {
+			flex: 2;
+			text-align: end;
+			padding-right: 10px;
+		}
+
+		#search-results .set {
+			text-transform: uppercase;
+			font-size: 0.9em;
+		}
+
+		#search-results .result {
+			padding: 4px 0;
+			border-bottom: 0.5px solid grey;
+		}
+
+		#search-results .result:nth-of-type(2n) {
+			background-color: #dfdede;
+		}
+
+		#search-results .result:hover {
+			background-color: #becbdb;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<dom-bind id="dom-bind">
+		<template>
+			<div class="layout horizontal">
+				<div class="layout" style="flex: 2.5; flex-basis: 50px;">
+					<img id="card-hover" src="[[hovered.image_uris.png]]" style="width: 100%;">
+				</div>
+
+				<div class="layout vertical" style="flex: 7; padding-left: 20px;">
+					<div class="layout vertical search-box">
+						<vaadin-combo-box id="search-field" name="search-field" class="flex" label="Search Scryfall" filtered-items="[[autocomplete.data]]" filter="{{filter}}" on-keyup="{{keyupHandler}}" allow-custom-value></vaadin-combo-box>
+						<nodecg-vaadin-checkbox id="first-printing" class="flex search-option" replicant-name="search.isFirstPrinting">Show Only First Printing</nodecg-vaadin-checkbox>
+					</div>
+
+					<div id="search-results">
+						<template is="dom-repeat" items="{{searchResults.data}}">
+							<div class="layout horizontal result"
+								on-click="setScryfallSelected"
+								on-mouseover="scryfallHovered"
+								on-mouseout="scryfallUnhovered">
+
+								<div class="name flex">[[item.name]]</div>
+								<mtg-mana-cost class="cost flex" cost="[[item.mana_cost]]"></mtg-mana-cost>
+								<div class="set flex" title="[[item.set_name]]">[[item.set]]</div>
+							</div>
+						</template>
+
+						<template is="dom-if" if="{{!searchResults.data.length}}">
+							<div class="layout horizontal">No search results.</div>
+						</template>
+					</div>
+				</div>
+			</div>
+
+			<iron-ajax id="ajax-autocomplete"
+				auto
+				url="https://api.scryfall.com/cards/autocomplete?q=[[filter]]"
+				debounce-duration="150"
+				last-response="{{autocomplete}}">
+			</iron-ajax>
+		</template>
+	</dom-bind>
+	<script>
+		(function() {
+			window.addEventListener('WebComponentsReady', function() {
+				let domBind = document.querySelector('#dom-bind');
+				let searchField = document.querySelector('#search-field');
+				let isFirstPrinting = nodecg.Replicant('search.isFirstPrinting');
+
+				let lastQuery = '';
+				const EMPTY = {
+					data: []
+				};
+
+				domBind.searchResults = EMPTY;
+				domBind.hovered = {
+					image_uris: {
+						png: 'https://img.scryfall.com/cards/large/en/lea/288.jpg'
+					}
+				};
+
+				domBind.search = async function(query, page) {
+					if (!query) {
+						return;
+					}
+
+					let params = {
+						q: `++ ${query}${isFirstPrinting.value ? ' is:firstPrinting' : ''}`,
+						page: `${page || 1}`
+					};
+
+					let stringifyParams = JSON.stringify(params);
+
+					// Short circuit if the query is the same as the last.
+					if (stringifyParams === lastQuery) {
+						return;
+					}
+
+					try {
+						let resp = await axios.get(
+							`https://api.scryfall.com/cards/search`, {
+							params
+						});
+
+						lastQuery = stringifyParams;
+						domBind.searchResults = resp.data;
+					} catch (e) {
+						domBind.searchResults = EMPTY;
+					}
+				};
+
+				domBind.setScryfallSelected = function(e) {
+					let selected = nodecg.Replicant('selected');
+					selected.value = Object.assign({}, e.model.item);
+				};
+
+				domBind.scryfallHovered = (e) => {
+					domBind.hovered = Object.assign({}, e.model.item);
+				};
+
+				domBind.scryfallUnhovered = (e) => {
+					if (domBind.hovered == e.model.item) {
+						domBind.hovered = undefined;
+					}
+				}
+
+				searchField.addEventListener('value-changed', () => {
+					domBind.search(searchField.value);
+				});
+
+				isFirstPrinting.on('change', () => {
+					domBind.search(searchField.value);
+				});
+			});
+		})();
+	</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+
+	<script src="../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+
+	<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+	<custom-style>
+		<style include="iron-flex iron-flex-alignment"></style>
+	</custom-style>
+
+	<style>
+		#card {
+			max-width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<dom-bind id="dom-bind">
+		<template>
+			<img id="card" src="[[selected.image_uris.png]]">
+		</template>
+	</dom-bind>
+	<script>
+	(function() {
+		window.addEventListener('WebComponentsReady', function() {
+			let domBind = document.querySelector('#dom-bind');
+
+			domBind.selected = {
+				image_uris: {
+					png: 'https://img.scryfall.com/cards/large/en/lea/288.jpg'
+				}
+			};
+
+			let selected = nodecg.Replicant('selected');
+
+			selected.on('change', newValue => {
+				domBind.selected = newValue;
+			});
+		});
+	})();
+	</script>
+</body>
+</html>
