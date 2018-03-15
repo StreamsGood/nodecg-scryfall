@@ -25,6 +25,7 @@
     "iron-form": "PolymerElements/iron-form#^2.0.1",
     "vaadin-button": "vaadin/vaadin-button#^1.0.5",
     "webcomponentsjs": "^1.1.0",
-    "mtg-mana-cost": "StreamsGood/mtg-mana-cost"
+    "mtg-mana-cost": "StreamsGood/mtg-mana-cost",
+    "axios": "^0.18.0"
   }
 }

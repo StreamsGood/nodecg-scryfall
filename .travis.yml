@@ -1,0 +1,18 @@
+language: node_js
+
+node_js:
+  - "node"
+
+cache:
+  directories:
+    - node_modules
+    - bower_components
+
+notifications:
+  email: false
+
+before_script:
+  - npm install -g bower
+
+script:
+  - bower install

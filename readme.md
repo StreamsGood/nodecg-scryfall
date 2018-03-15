@@ -1,7 +1,10 @@
 # nodecg-scryfall
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/StreamsGood/nodecg-scryfall.svg)](https://greenkeeper.io/)
+[![Build Status](https://travis-ci.org/StreamsGood/nodecg-scryfall.svg?branch=master)](https://travis-ci.org/StreamsGood/nodecg-scryfall)
+
 ```sh
-npm install
+# All dependencies are managed by bower.
 bower install
 ```
 
