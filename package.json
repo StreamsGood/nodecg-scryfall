@@ -20,7 +20,7 @@
       },
       {
         "name": "scryfall-result",
-        "title": "Scryfall",
+        "title": "Scryfall Output",
         "width": 2,
         "file": "scryfall-result.html",
         "headerColor": "#2B253A"

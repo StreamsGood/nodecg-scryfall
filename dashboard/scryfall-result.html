@@ -20,21 +20,25 @@
 <body>
 	<dom-bind id="dom-bind">
 		<template>
-			<img id="card" src="[[selected.image_uris.png]]">
+			<img id="card" src="[[selected.card_faces.0.image_uris.png]]">
 		</template>
 	</dom-bind>
 	<script>
 	(function() {
+		const selected = nodecg.Replicant('selected');
+
 		window.addEventListener('WebComponentsReady', function() {
 			let domBind = document.querySelector('#dom-bind');
 
 			domBind.selected = {
-				image_uris: {
-					png: 'https://img.scryfall.com/cards/large/en/lea/288.jpg'
-				}
+				card_faces: [
+					{
+						image_uris: {
+							png: 'https://img.scryfall.com/cards/large/en/lea/288.jpg'
+						}
+					}
+				]
 			};
-
-			let selected = nodecg.Replicant('selected');
 
 			selected.on('change', newValue => {
 				domBind.selected = newValue;

@@ -33,7 +33,7 @@
 	<style>
 		#search-field {
 			width: 100%;
-			margin-top: -10px;
+			margin-top: -20px;
 		}
 
 		.search-option {
@@ -41,8 +41,8 @@
 		}
 
 		#search-results {
-			max-height: 215px;
-			height: 215px;
+			max-height: 160px;
+			height: 160px;
 			overflow-y: scroll;
 
 			margin-top: 10px;
@@ -86,7 +86,7 @@
 		<template>
 			<div class="layout horizontal">
 				<div class="layout" style="flex: 2.5; flex-basis: 50px;">
-					<img id="card-hover" src="[[hovered.image_uris.png]]" style="width: 100%;">
+					<img id="card-hover" src="[[hovered.card_faces.0.image_uris.png]]" style="width: 100%;">
 				</div>
 
 				<div class="layout vertical" style="flex: 7; padding-left: 20px;">
@@ -125,10 +125,13 @@
 	</dom-bind>
 	<script>
 		(function() {
+			let isFirstPrinting = nodecg.Replicant('search.isFirstPrinting');
+			let selected = nodecg.Replicant('selected');
+			let hovered = nodecg.Replicant('hovered');
+
 			window.addEventListener('WebComponentsReady', function() {
 				let domBind = document.querySelector('#dom-bind');
 				let searchField = document.querySelector('#search-field');
-				let isFirstPrinting = nodecg.Replicant('search.isFirstPrinting');
 
 				let lastQuery = '';
 				const EMPTY = {
@@ -137,9 +140,13 @@
 
 				domBind.searchResults = EMPTY;
 				domBind.hovered = {
-					image_uris: {
-						png: 'https://img.scryfall.com/cards/large/en/lea/288.jpg'
-					}
+					card_faces: [
+						{
+							image_uris: {
+								png: 'https://img.scryfall.com/cards/large/en/tmp/214.jpg'
+							}
+						}
+					]
 				};
 
 				domBind.search = async function(query, page) {
@@ -166,18 +173,32 @@
 						});
 
 						lastQuery = stringifyParams;
+
+						resp.data.data.map(handleCardFaces);
 						domBind.searchResults = resp.data;
 					} catch (e) {
 						domBind.searchResults = EMPTY;
 					}
 				};
 
+				function handleCardFaces(card) {
+					if (!card.card_faces) {
+						card.card_faces = [
+							{
+								image_uris: card.image_uris
+							}
+						];
+					}
+
+					return card;
+				}
+
 				domBind.setScryfallSelected = function(e) {
-					let selected = nodecg.Replicant('selected');
 					selected.value = Object.assign({}, e.model.item);
 				};
 
 				domBind.scryfallHovered = (e) => {
+					hovered.value = Object.assign({}, e.model.item);
 					domBind.hovered = Object.assign({}, e.model.item);
 				};
 
