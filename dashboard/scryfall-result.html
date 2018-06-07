@@ -7,6 +7,9 @@
 
 	<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
+	<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-button.html">
+	<link rel="import" href="../bower_components/vaadin-button/vaadin-button.html">
+
 	<custom-style>
 		<style include="iron-flex iron-flex-alignment"></style>
 	</custom-style>
@@ -15,17 +18,23 @@
 		#card {
 			max-width: 100%;
 		}
+
+		#flip {
+			display: block;
+		}
 	</style>
 </head>
 <body>
 	<dom-bind id="dom-bind">
 		<template>
-			<img id="card" src="[[selected.card_faces.0.image_uris.png]]">
+			<img id="card" src="[[_selectedCardImage(selected, cardFace)]]">
+			<vaadin-button id="flip" on-click="_flip" theme="raised" disabled="{{!_hasFlipSide(selected)}}">Flip</vaadin-button>
 		</template>
 	</dom-bind>
 	<script>
 	(function() {
 		const selected = nodecg.Replicant('selected');
+		const cardFace = nodecg.Replicant('selected-card-face');
 
 		window.addEventListener('WebComponentsReady', function() {
 			let domBind = document.querySelector('#dom-bind');
@@ -34,14 +43,35 @@
 				card_faces: [
 					{
 						image_uris: {
-							png: 'https://img.scryfall.com/cards/large/en/lea/288.jpg'
+							png: 'https://img.scryfall.com/cards/png/en/lea/288.png'
 						}
 					}
 				]
 			};
 
+			domBind.cardFace = -1;
+
+			domBind._selectedCardImage = (selected, cardFace) => {
+				return selected.card_faces[cardFace] ? selected.card_faces[cardFace].image_uris.png : selected.card_faces[0].image_uris.png;
+			};
+
+			domBind._hasFlipSide = (selected) => {
+				return selected.card_faces.length > 1;
+			};
+
+			domBind._flip = () => {
+				let nextCardFace = cardFace.value + 1;
+				cardFace.value = nextCardFace > domBind.selected.card_faces.length - 1 ? 0 : nextCardFace;
+			};
+
 			selected.on('change', newValue => {
 				domBind.selected = newValue;
+				cardFace.value = 0;
+				domBind.notifyPath('cardFace', 'changed');
+			});
+
+			cardFace.on('change', newValue => {
+				domBind.cardFace = newValue;
 			});
 		});
 	})();
