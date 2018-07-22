@@ -182,7 +182,7 @@
 				};
 
 				function handleCardFaces(card) {
-					if (!card.card_faces || card.layout == 'flip') {
+					if (!card.card_faces || card.layout == 'flip' || card.layout == 'split') {
 						card.card_faces = [
 							{
 								image_uris: card.image_uris
