@@ -9,21 +9,19 @@
   "author": "",
   "license": "MIT",
   "nodecg": {
-    "compatibleRange": ">=0.9",
+    "compatibleRange": ">=1.1.0",
     "dashboardPanels": [
       {
         "name": "scryfall-search",
         "title": "Scryfall",
         "width": 4,
-        "file": "scryfall-search.html",
-        "headerColor": "#2B253A"
+        "file": "scryfall-search.html"
       },
       {
         "name": "scryfall-result",
         "title": "Scryfall Output",
         "width": 2,
-        "file": "scryfall-result.html",
-        "headerColor": "#2B253A"
+        "file": "scryfall-result.html"
       }
     ]
   },

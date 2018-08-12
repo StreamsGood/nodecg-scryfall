@@ -6,6 +6,8 @@
 	<script src="../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 	<script src="../bower_components/axios/dist/axios.js"></script>
 
+	<link rel="import" href="/dashboard/css/nodecg-theme.html">
+
 	<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 	<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -27,59 +29,69 @@
 	<link rel="import" href="../bower_components/mtg-mana-cost/mtg-mana-cost.html">
 
 	<custom-style>
-		<style include="iron-flex iron-flex-alignment"></style>
+		<style include="nodecg-theme iron-flex iron-flex-alignment">
+			html {
+				--material-body-text-color: white;
+				--material-secondary-text-color: white;
+				--material-disabled-text-color: white;
+				--material-background-color: #2F3A4F;
+				---material-button-raised-background-color: var(--nodecg-configure-color);
+
+				--material-divider-color: #00bebe;
+				--material-primary-color: #00bebe;
+				--nodecg-brand-blue-dark: #004949;
+			}
+
+			#search-field {
+				width: 100%;
+				margin-top: -20px;
+			}
+
+			.search-option {
+				font-size: 0.8em;
+			}
+
+			#search-results {
+				max-height: 160px;
+				height: 160px;
+				overflow-y: scroll;
+
+				margin-top: 10px;
+
+				width: 100%;
+			}
+
+			#search-results .name {
+				flex: 6;
+				font-size: 0.9em;
+			}
+
+			#search-results .cost {
+				flex: 2;
+				text-align: end;
+				padding-right: 10px;
+			}
+
+			#search-results .set {
+				text-transform: uppercase;
+				font-size: 0.9em;
+			}
+
+			#search-results .result {
+				padding: 4px 0;
+				border-bottom: 0.5px solid grey;
+			}
+
+			#search-results .result:nth-of-type(2n) {
+				background-color: rgba(255, 255, 255, 0.1);
+			}
+
+			#search-results .result:hover {
+				background-color: var(--material-divider-color);
+				cursor: pointer;
+			}
+		</style>
 	</custom-style>
-
-	<style>
-		#search-field {
-			width: 100%;
-			margin-top: -20px;
-		}
-
-		.search-option {
-			font-size: 0.8em;
-		}
-
-		#search-results {
-			max-height: 160px;
-			height: 160px;
-			overflow-y: scroll;
-
-			margin-top: 10px;
-
-			width: 100%;
-		}
-
-		#search-results .name {
-			flex: 6;
-			font-size: 0.9em;
-		}
-
-		#search-results .cost {
-			flex: 2;
-			text-align: end;
-			padding-right: 10px;
-		}
-
-		#search-results .set {
-			text-transform: uppercase;
-			font-size: 0.9em;
-		}
-
-		#search-results .result {
-			padding: 4px 0;
-			border-bottom: 0.5px solid grey;
-		}
-
-		#search-results .result:nth-of-type(2n) {
-			background-color: #dfdede;
-		}
-
-		#search-results .result:hover {
-			background-color: #becbdb;
-			cursor: pointer;
-		}
-	</style>
 </head>
 <body>
 	<dom-bind id="dom-bind">

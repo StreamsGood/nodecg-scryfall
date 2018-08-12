@@ -5,34 +5,48 @@
 
 	<script src="../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 
+	<link rel="import" href="/dashboard/css/nodecg-theme.html">
+
 	<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 	<link rel="import" href="../bower_components/vaadin-material-theme/vaadin-button.html">
 	<link rel="import" href="../bower_components/vaadin-button/vaadin-button.html">
 
 	<custom-style>
-		<style include="iron-flex iron-flex-alignment"></style>
+		<style include="nodecg-theme iron-flex iron-flex-alignment">
+			html {
+				--material-body-text-color: white;
+				--material-secondary-text-color: white;
+				--material-disabled-text-color: white;
+				--material-background-color: #2F3A4F;
+				---material-button-raised-background-color: var(--nodecg-configure-color);
+
+				--material-divider-color: #00bebe;
+				--material-primary-color: #00bebe;
+				--nodecg-brand-blue-dark: #004949;
+			}
+
+			#card {
+				display: block;
+				max-width: 100%;
+				margin: 0 auto;
+			}
+
+			#flip {
+				display: block;
+				/* background-color: rgb(62, 145, 201); */
+				background-color: var(--nodecg-configure-color);
+				color: white;
+
+				margin: 10px 0 0 0;
+			}
+
+			#flip[disabled] {
+				background-color: rgb(110, 110, 110) !important;
+				background-color: var(--nodecg-disabled-color);
+			}
+		</style>
 	</custom-style>
-
-	<style>
-		#card {
-			display: block;
-			max-width: 100%;
-			margin: 0 auto;
-		}
-
-		#flip {
-			display: block;
-			background-color: rgb(62, 145, 201);
-			color: white;
-
-			margin: 10px 0 0 0;
-		}
-
-		#flip[disabled] {
-			background-color: rgb(110, 110, 110) !important;
-		}
-	</style>
 </head>
 <body>
 	<dom-bind id="dom-bind">
